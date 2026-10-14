@@ -1,0 +1,8 @@
+﻿file_mb,nodes,quantize_linear,dequantize_linear,qlinear_fused,qdq_style,path,label,quant_format,per_channel,calibrate_method,calib_source,calib_images
+3.65,303,66,172,0,True,C:\Users\xzjdtm\Documents\embedded-ai-sprint\artifacts/models\mobilenet_v2_opset13_sim_qdq_pertensor_minmax.onnx,qdq_pertensor_minmax,QDQ,False,MinMax,all,200
+3.89,303,66,172,0,True,C:\Users\xzjdtm\Documents\embedded-ai-sprint\artifacts/models\mobilenet_v2_opset13_sim_qdq_perchannel_minmax.onnx,qdq_perchannel_minmax,QDQ,True,MinMax,all,200
+3.89,303,66,172,0,True,C:\Users\xzjdtm\Documents\embedded-ai-sprint\artifacts/models\mobilenet_v2_opset13_sim_qdq_perchannel_entropy.onnx,qdq_perchannel_entropy,QDQ,True,Entropy,all,200
+3.89,303,66,172,0,True,C:\Users\xzjdtm\Documents\embedded-ai-sprint\artifacts/models\mobilenet_v2_opset13_sim_qdq_perchannel_percentile.onnx,qdq_perchannel_percentile,QDQ,True,Percentile,all,200
+3.61,69,2,2,52,True,C:\Users\xzjdtm\Documents\embedded-ai-sprint\artifacts/models\mobilenet_v2_opset13_sim_qoperator_pertensor.onnx,qoperator_pertensor,QOperator,False,MinMax,all,200
+3.7,69,2,2,52,True,C:\Users\xzjdtm\Documents\embedded-ai-sprint\artifacts/models\mobilenet_v2_opset13_sim_qoperator_perchannel.onnx,qoperator_perchannel,QOperator,True,MinMax,all,200
+3.89,303,66,172,0,True,C:\Users\xzjdtm\Documents\embedded-ai-sprint\artifacts/models\mobilenet_v2_opset13_sim_qdq_perchannel_narrowcalib.onnx,qdq_perchannel_narrowcalib,QDQ,True,MinMax,narrow,200

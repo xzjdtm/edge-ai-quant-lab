@@ -1,0 +1,125 @@
+{
+  "source_model": "C:\\Users\\xzjdtm\\Documents\\embedded-ai-sprint\\artifacts/models/mobilenet_v2_opset13_sim.onnx",
+  "baseline_preproc": {
+    "nodes": 100,
+    "file_mb": 13.99,
+    "path": "C:\\Users\\xzjdtm\\Documents\\embedded-ai-sprint\\artifacts/models\\mobilenet_v2_opset13_sim_preproc.onnx"
+  },
+  "calibration": {
+    "all": {
+      "path": "C:\\Users\\xzjdtm\\Documents\\embedded-ai-sprint\\data/calib/calib_all.txt",
+      "images": 200
+    },
+    "narrow": {
+      "path": "C:\\Users\\xzjdtm\\Documents\\embedded-ai-sprint\\data/calib/calib_narrow_500.txt",
+      "images": 200
+    }
+  },
+  "variants": [
+    {
+      "file_mb": 3.65,
+      "nodes": 303,
+      "quantize_linear": 66,
+      "dequantize_linear": 172,
+      "qlinear_fused": 0,
+      "qdq_style": true,
+      "path": "C:\\Users\\xzjdtm\\Documents\\embedded-ai-sprint\\artifacts/models\\mobilenet_v2_opset13_sim_qdq_pertensor_minmax.onnx",
+      "label": "qdq_pertensor_minmax",
+      "quant_format": "QDQ",
+      "per_channel": false,
+      "calibrate_method": "MinMax",
+      "calib_source": "all",
+      "calib_images": 200
+    },
+    {
+      "file_mb": 3.89,
+      "nodes": 303,
+      "quantize_linear": 66,
+      "dequantize_linear": 172,
+      "qlinear_fused": 0,
+      "qdq_style": true,
+      "path": "C:\\Users\\xzjdtm\\Documents\\embedded-ai-sprint\\artifacts/models\\mobilenet_v2_opset13_sim_qdq_perchannel_minmax.onnx",
+      "label": "qdq_perchannel_minmax",
+      "quant_format": "QDQ",
+      "per_channel": true,
+      "calibrate_method": "MinMax",
+      "calib_source": "all",
+      "calib_images": 200
+    },
+    {
+      "file_mb": 3.89,
+      "nodes": 303,
+      "quantize_linear": 66,
+      "dequantize_linear": 172,
+      "qlinear_fused": 0,
+      "qdq_style": true,
+      "path": "C:\\Users\\xzjdtm\\Documents\\embedded-ai-sprint\\artifacts/models\\mobilenet_v2_opset13_sim_qdq_perchannel_entropy.onnx",
+      "label": "qdq_perchannel_entropy",
+      "quant_format": "QDQ",
+      "per_channel": true,
+      "calibrate_method": "Entropy",
+      "calib_source": "all",
+      "calib_images": 200
+    },
+    {
+      "file_mb": 3.89,
+      "nodes": 303,
+      "quantize_linear": 66,
+      "dequantize_linear": 172,
+      "qlinear_fused": 0,
+      "qdq_style": true,
+      "path": "C:\\Users\\xzjdtm\\Documents\\embedded-ai-sprint\\artifacts/models\\mobilenet_v2_opset13_sim_qdq_perchannel_percentile.onnx",
+      "label": "qdq_perchannel_percentile",
+      "quant_format": "QDQ",
+      "per_channel": true,
+      "calibrate_method": "Percentile",
+      "calib_source": "all",
+      "calib_images": 200
+    },
+    {
+      "file_mb": 3.61,
+      "nodes": 69,
+      "quantize_linear": 2,
+      "dequantize_linear": 2,
+      "qlinear_fused": 52,
+      "qdq_style": true,
+      "path": "C:\\Users\\xzjdtm\\Documents\\embedded-ai-sprint\\artifacts/models\\mobilenet_v2_opset13_sim_qoperator_pertensor.onnx",
+      "label": "qoperator_pertensor",
+      "quant_format": "QOperator",
+      "per_channel": false,
+      "calibrate_method": "MinMax",
+      "calib_source": "all",
+      "calib_images": 200
+    },
+    {
+      "file_mb": 3.7,
+      "nodes": 69,
+      "quantize_linear": 2,
+      "dequantize_linear": 2,
+      "qlinear_fused": 52,
+      "qdq_style": true,
+      "path": "C:\\Users\\xzjdtm\\Documents\\embedded-ai-sprint\\artifacts/models\\mobilenet_v2_opset13_sim_qoperator_perchannel.onnx",
+      "label": "qoperator_perchannel",
+      "quant_format": "QOperator",
+      "per_channel": true,
+      "calibrate_method": "MinMax",
+      "calib_source": "all",
+      "calib_images": 200
+    },
+    {
+      "file_mb": 3.89,
+      "nodes": 303,
+      "quantize_linear": 66,
+      "dequantize_linear": 172,
+      "qlinear_fused": 0,
+      "qdq_style": true,
+      "path": "C:\\Users\\xzjdtm\\Documents\\embedded-ai-sprint\\artifacts/models\\mobilenet_v2_opset13_sim_qdq_perchannel_narrowcalib.onnx",
+      "label": "qdq_perchannel_narrowcalib",
+      "quant_format": "QDQ",
+      "per_channel": true,
+      "calibrate_method": "MinMax",
+      "calib_source": "narrow",
+      "calib_images": 200
+    }
+  ]
+}

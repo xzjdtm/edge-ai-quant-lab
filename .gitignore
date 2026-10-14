@@ -1,0 +1,39 @@
+# ---- 数据与中间产物：不进版本库 ----
+data/imagenet_sample/
+data/calib/*.txt
+.cache/
+.wheelcache/
+.piptmp/
+.pylibs/
+logs/
+
+# ---- 模型文件：太大，且可复现 ----
+artifacts/models/*.onnx
+artifacts/instrumented/*.onnx
+*.onnx
+*.rknn
+*.pt
+*.pth
+
+# ---- 临时目录（沙箱锁死的那些）----
+probe.*/
+tmp*/
+
+# ---- Python ----
+__pycache__/
+*.py[cod]
+*.egg-info/
+.venv/
+venv/
+
+# ---- 编辑器 / 系统 ----
+.vscode/
+.idea/
+.DS_Store
+Thumbs.db
+
+# ---- 保留这些（它们是结论，不是产物）----
+!artifacts/tables/*.csv
+!artifacts/reports/*.json
+!W1_报告/*.png
+!W1_报告/*.md

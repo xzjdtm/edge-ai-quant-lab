@@ -1,0 +1,96 @@
+{
+  "num_images": 200,
+  "variants": [
+    {
+      "top1_match": 0.84,
+      "top5_contains_fp32_top1": 0.98,
+      "mean_confidence_fp32": 0.3503374631309714,
+      "mean_confidence_int8": 0.22308828042374876,
+      "confidence_drop": 0.12724918270722266,
+      "mean_kl_divergence": 0.19393366923513525,
+      "max_kl_divergence": 2.0759342223784287,
+      "mean_abs_logit_diff": 0.21659176605086586,
+      "max_abs_logit_diff": 4.948330402374268,
+      "label": "qdq_pertensor_minmax",
+      "file_mb": 3.65
+    },
+    {
+      "top1_match": 0.98,
+      "top5_contains_fp32_top1": 1.0,
+      "mean_confidence_fp32": 0.3503374631309714,
+      "mean_confidence_int8": 0.33872461064328363,
+      "confidence_drop": 0.011612852487687786,
+      "mean_kl_divergence": 0.009096140025960592,
+      "max_kl_divergence": 0.07434701347521916,
+      "mean_abs_logit_diff": 0.06495440382660554,
+      "max_abs_logit_diff": 0.9207823276519775,
+      "label": "qdq_perchannel_minmax",
+      "file_mb": 3.89
+    },
+    {
+      "top1_match": 0.98,
+      "top5_contains_fp32_top1": 1.0,
+      "mean_confidence_fp32": 0.3503374631309714,
+      "mean_confidence_int8": 0.33872461064328363,
+      "confidence_drop": 0.011612852487687786,
+      "mean_kl_divergence": 0.009096140025960592,
+      "max_kl_divergence": 0.07434701347521916,
+      "mean_abs_logit_diff": 0.06495440382660554,
+      "max_abs_logit_diff": 0.9207823276519775,
+      "label": "qdq_perchannel_entropy",
+      "file_mb": 3.89
+    },
+    {
+      "top1_match": 0.98,
+      "top5_contains_fp32_top1": 1.0,
+      "mean_confidence_fp32": 0.3503374631309714,
+      "mean_confidence_int8": 0.3387508787475371,
+      "confidence_drop": 0.011586584383434295,
+      "mean_kl_divergence": 0.007840976545392137,
+      "max_kl_divergence": 0.050963211284401275,
+      "mean_abs_logit_diff": 0.06176041988873111,
+      "max_abs_logit_diff": 0.8602604866027832,
+      "label": "qdq_perchannel_percentile",
+      "file_mb": 3.89
+    },
+    {
+      "top1_match": 0.85,
+      "top5_contains_fp32_top1": 0.98,
+      "mean_confidence_fp32": 0.3503374631309714,
+      "mean_confidence_int8": 0.2215806064503704,
+      "confidence_drop": 0.12875685668060102,
+      "mean_kl_divergence": 0.19496647535800984,
+      "max_kl_divergence": 2.109890218430185,
+      "mean_abs_logit_diff": 0.21638657916318435,
+      "max_abs_logit_diff": 5.018179655075073,
+      "label": "qoperator_pertensor",
+      "file_mb": 3.61
+    },
+    {
+      "top1_match": 0.98,
+      "top5_contains_fp32_top1": 1.0,
+      "mean_confidence_fp32": 0.3503374631309714,
+      "mean_confidence_int8": 0.3389504956589946,
+      "confidence_drop": 0.011386967471976817,
+      "mean_kl_divergence": 0.00900055554447919,
+      "max_kl_divergence": 0.07434701347521916,
+      "mean_abs_logit_diff": 0.06478008028192633,
+      "max_abs_logit_diff": 0.9207823276519775,
+      "label": "qoperator_perchannel",
+      "file_mb": 3.7
+    },
+    {
+      "top1_match": 0.98,
+      "top5_contains_fp32_top1": 1.0,
+      "mean_confidence_fp32": 0.3503374631309714,
+      "mean_confidence_int8": 0.33952780683678974,
+      "confidence_drop": 0.01080965629418168,
+      "mean_kl_divergence": 0.008826355244642824,
+      "max_kl_divergence": 0.04966009588144162,
+      "mean_abs_logit_diff": 0.0643192928391746,
+      "max_abs_logit_diff": 0.7704906463623047,
+      "label": "qdq_perchannel_narrowcalib",
+      "file_mb": 3.89
+    }
+  ]
+}

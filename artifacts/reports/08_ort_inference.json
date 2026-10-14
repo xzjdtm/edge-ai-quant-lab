@@ -1,0 +1,113 @@
+{
+  "available_providers": [
+    "AzureExecutionProvider",
+    "CPUExecutionProvider"
+  ],
+  "device": "CPU",
+  "session": {
+    "providers": [
+      "CPUExecutionProvider"
+    ],
+    "inputs": [
+      {
+        "name": "input",
+        "shape": [
+          1,
+          3,
+          224,
+          224
+        ],
+        "type": "tensor(float)"
+      }
+    ],
+    "outputs": [
+      {
+        "name": "output",
+        "shape": [
+          1,
+          1000
+        ],
+        "type": "tensor(float)"
+      }
+    ],
+    "dynamic_input": false
+  },
+  "dynamic_note": "未提供动态模型（用 01_export_onnx.py --dynamic-batch 生成）",
+  "io_binding": {
+    "cosine": 1.0000000000000002
+  },
+  "optimization_levels": [
+    {
+      "first_call_ms": 33.8424999936251,
+      "mean_ms": 26.982699999643955,
+      "median_ms": 26.986750002834015,
+      "p95_ms": 27.093774990498787,
+      "min_ms": 26.832500007003546,
+      "std_ms": 0.07801081889805958,
+      "fps_from_median": 37.05522154001445,
+      "label": "ORT_DISABLE_ALL"
+    },
+    {
+      "first_call_ms": 27.463399994303472,
+      "mean_ms": 27.067610000813147,
+      "median_ms": 27.048299998568837,
+      "p95_ms": 27.31523999827914,
+      "min_ms": 26.834400006919168,
+      "std_ms": 0.13419701353100966,
+      "fps_from_median": 36.97090020640526,
+      "label": "ORT_ENABLE_BASIC"
+    },
+    {
+      "first_call_ms": 25.45119999558665,
+      "mean_ms": 24.88511000192375,
+      "median_ms": 24.855050003679935,
+      "p95_ms": 25.07467000395991,
+      "min_ms": 24.730700009968132,
+      "std_ms": 0.09850590228974772,
+      "fps_from_median": 40.233272508079615,
+      "label": "ORT_ENABLE_EXTENDED"
+    },
+    {
+      "first_call_ms": 12.657799990847707,
+      "mean_ms": 12.374509999790462,
+      "median_ms": 12.36609999614302,
+      "p95_ms": 12.437420003698207,
+      "min_ms": 12.302100003580563,
+      "std_ms": 0.04963102654418751,
+      "fps_from_median": 80.8662391790378,
+      "label": "ORT_ENABLE_ALL"
+    }
+  ],
+  "threads": [
+    {
+      "first_call_ms": 12.693299999227747,
+      "mean_ms": 12.451510001847055,
+      "median_ms": 12.377599996398203,
+      "p95_ms": 13.110980002966244,
+      "min_ms": 12.27800000924617,
+      "std_ms": 0.22822149987861287,
+      "fps_from_median": 80.7911065385045,
+      "threads": 1
+    },
+    {
+      "first_call_ms": 8.322799985762686,
+      "mean_ms": 7.187195002188673,
+      "median_ms": 7.190400006948039,
+      "p95_ms": 7.287880004878389,
+      "min_ms": 7.069800005410798,
+      "std_ms": 0.06984192411902579,
+      "fps_from_median": 139.0743211829253,
+      "threads": 2
+    },
+    {
+      "first_call_ms": 4.367200002889149,
+      "mean_ms": 3.929270002117846,
+      "median_ms": 3.9095000029192306,
+      "p95_ms": 4.030780011089519,
+      "min_ms": 3.828500004601665,
+      "std_ms": 0.07152647916968813,
+      "fps_from_median": 255.78718487103163,
+      "threads": 4
+    }
+  ]
+}

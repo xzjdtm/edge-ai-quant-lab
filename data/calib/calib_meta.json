@@ -1,0 +1,21 @@
+{
+  "source": "custom",
+  "total_available": 1994,
+  "num_classes": 997,
+  "balanced_count": 500,
+  "narrow_domain": "domain_animal",
+  "narrow_count": 500,
+  "domains": {
+    "domain_animal": 1196,
+    "domain_object": 459,
+    "domain_scene": 339
+  },
+  "nested_sizes": [
+    10,
+    50,
+    200,
+    500
+  ],
+  "seed": 0,
+  "outdir": "C:\\Users\\xzjdtm\\Documents\\embedded-ai-sprint\\data\\calib"
+}

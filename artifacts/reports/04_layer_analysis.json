@@ -1,0 +1,132 @@
+{
+  "qdq_pertensor_minmax": {
+    "num_tensors": 29,
+    "mean_cosine": 0.9061616953009325,
+    "worst": {
+      "tensor": "/features/features.16/conv/conv.2/Conv_output_0",
+      "op_type": "Conv",
+      "shape": [
+        1,
+        160,
+        7,
+        7
+      ],
+      "cosine": 0.8387286343073634,
+      "cosine_min": 0.6678589150641143,
+      "sqnr_db": 5.294568125535124,
+      "rel_l2": 0.5519472952757961,
+      "absmax": 16.78243198990822,
+      "rms": 2.486164304399808,
+      "order": 24,
+      "variant": "qdq_pertensor_minmax",
+      "input_cosine": null,
+      "input_rel_l2": null
+    },
+    "best": {
+      "tensor": "/features/features.1/conv/conv.1/Conv_output_0",
+      "op_type": "Conv",
+      "shape": [
+        1,
+        16,
+        112,
+        112
+      ],
+      "cosine": 0.9887012190202985,
+      "cosine_min": 0.9710945406094802,
+      "sqnr_db": 16.89885359350316,
+      "rel_l2": 0.1465591087745869,
+      "absmax": 63.42905402183533,
+      "rms": 6.154625936762718,
+      "order": 0,
+      "variant": "qdq_pertensor_minmax",
+      "input_cosine": null,
+      "input_rel_l2": null
+    },
+    "first_break": {
+      "tensor": "/features/features.1/conv/conv.1/Conv_output_0",
+      "op_type": "Conv",
+      "shape": [
+        1,
+        16,
+        112,
+        112
+      ],
+      "cosine": 0.9887012190202985,
+      "cosine_min": 0.9710945406094802,
+      "sqnr_db": 16.89885359350316,
+      "rel_l2": 0.1465591087745869,
+      "absmax": 63.42905402183533,
+      "rms": 6.154625936762718,
+      "order": 0,
+      "variant": "qdq_pertensor_minmax",
+      "input_cosine": null,
+      "input_rel_l2": null
+    },
+    "threshold": 0.99
+  },
+  "qdq_perchannel_minmax": {
+    "num_tensors": 29,
+    "mean_cosine": 0.9881601774347852,
+    "worst": {
+      "tensor": "/features/features.13/conv/conv.2/Conv_output_0",
+      "op_type": "Conv",
+      "shape": [
+        1,
+        96,
+        14,
+        14
+      ],
+      "cosine": 0.97962319653931,
+      "cosine_min": 0.8992370771968571,
+      "sqnr_db": 14.776330697811458,
+      "rel_l2": 0.1904952813519673,
+      "absmax": 19.098105370998383,
+      "rms": 2.4057678778429006,
+      "order": 19,
+      "variant": "qdq_perchannel_minmax",
+      "input_cosine": null,
+      "input_rel_l2": null
+    },
+    "best": {
+      "tensor": "/features/features.1/conv/conv.1/Conv_output_0",
+      "op_type": "Conv",
+      "shape": [
+        1,
+        16,
+        112,
+        112
+      ],
+      "cosine": 0.9981718596920988,
+      "cosine_min": 0.9951463735621775,
+      "sqnr_db": 25.074564628722175,
+      "rel_l2": 0.05818309354233543,
+      "absmax": 63.42905402183533,
+      "rms": 6.154625936762718,
+      "order": 0,
+      "variant": "qdq_perchannel_minmax",
+      "input_cosine": null,
+      "input_rel_l2": null
+    },
+    "first_break": {
+      "tensor": "/features/features.6/conv/conv.2/Conv_output_0",
+      "op_type": "Conv",
+      "shape": [
+        1,
+        32,
+        28,
+        28
+      ],
+      "cosine": 0.9871761366678713,
+      "cosine_min": 0.9426285439725055,
+      "sqnr_db": 16.71333278943998,
+      "rel_l2": 0.15217828224356067,
+      "absmax": 31.589459836483,
+      "rms": 2.7532183655259,
+      "order": 7,
+      "variant": "qdq_perchannel_minmax",
+      "input_cosine": null,
+      "input_rel_l2": null
+    },
+    "threshold": 0.99
+  }
+}
