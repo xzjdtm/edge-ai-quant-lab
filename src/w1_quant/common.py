@@ -193,6 +193,20 @@ def rel_l2(reference: np.ndarray, test: np.ndarray) -> float:
     return float(np.linalg.norm(err) / norm)
 
 
+def max_abs_error(reference: np.ndarray, test: np.ndarray) -> float:
+    """Largest single-element deviation between two tensors.
+
+    Complements cosine/SQNR: those are aggregate measures, so a handful of
+    badly saturated elements can hide inside a good average. This is the
+    "worst single value" view.
+    """
+    ref = np.asarray(reference, dtype=np.float64).ravel()
+    err = np.asarray(test, dtype=np.float64).ravel() - ref
+    if err.size == 0:
+        return float("nan")
+    return float(np.max(np.abs(err)))
+    
+
 def rms(x: np.ndarray) -> float:
     x = np.asarray(x, dtype=np.float64).ravel()
     return float(np.sqrt(np.mean(x * x))) if x.size else float("nan")

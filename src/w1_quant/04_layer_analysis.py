@@ -47,6 +47,7 @@ from w1_quant.common import (  # noqa: E402
     instrument_explicit,
     intersect_tensors,
     load_layer_meta,
+    max_abs_error,
     redirect_tempdir,
     rel_l2,
     rms,
@@ -147,7 +148,7 @@ def compare_models(
         batch_size = fixed
 
     accum: dict[str, dict] = {
-        name: {"cos": [], "sqnr": [], "rel": [], "absmax": [], "rms": []}
+        name: {"cos": [], "sqnr": [], "rel": [], "absmax": [], "rms": [], "max_abs_err": []}
         for name in shared
     }
 
@@ -166,6 +167,7 @@ def compare_models(
                 rec["rel"].append(rel_l2(a, b))
                 rec["absmax"].append(float(np.max(np.abs(a))))
                 rec["rms"].append(rms(a))
+                rec["max_abs_err"].append(max_abs_error(a, b))
         print(
             "  batch %d/%d done"
             % (
@@ -189,6 +191,7 @@ def compare_models(
             "rel_l2": float(np.mean(rec["rel"])),
             "absmax": float(np.mean(rec["absmax"])),
             "rms": float(np.mean(rec["rms"])),
+            "max_abs_err": float(np.mean(rec["max_abs_err"])),
         }
     return summary
 
@@ -411,11 +414,7 @@ def main() -> int:
         print("\nno results produced")
         return 1
 
-    columns = [
-        "variant", "order", "op_type", "tensor", "shape",
-        "cosine", "cosine_min", "sqnr_db", "rel_l2", "absmax",
-        "input_cosine", "input_rel_l2",
-    ]
+
     csv_path = os.path.join(args.outdir, "tables", "04_layer_metrics.csv")
     write_csv(all_rows, csv_path)
     write_json(reports, os.path.join(args.outdir, "reports", "04_layer_analysis.json"))
