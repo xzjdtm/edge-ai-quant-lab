@@ -1,46 +1,19 @@
 {
-  "model": "mobilenet_v2",
-  "params_m": 3.505,
+  "model": "mobilenet_v3_small",
+  "params_m": 2.543,
   "opset_requested": 13,
   "dynamic_batch": false,
   "do_constant_folding": true,
   "torch_output": {
-    "argmax": 92,
-    "sum": 0.08034515380859375,
-    "std": 0.7300147414207458
+    "argmax": 21,
+    "sum": 725.205078125,
+    "std": 1.4977517127990723
   },
   "stages": {
     "exported": {
-      "path": "mobilenet_v2_opset13.onnx",
-      "size_mb": 13.99,
-      "nodes": 170,
-      "initializers": 106,
-      "inputs": [
-        "input"
-      ],
-      "outputs": [
-        "output"
-      ],
-      "has_dynamic_batch": false,
-      "top_ops": {
-        "Constant": 70,
-        "Conv": 52,
-        "Clip": 35,
-        "Add": 10,
-        "GlobalAveragePool": 1,
-        "Flatten": 1,
-        "Gemm": 1
-      },
-      "ir_version": 7,
-      "opset": {
-        "ai.onnx": 13
-      },
-      "metadata": {}
-    },
-    "simplified": {
-      "path": "mobilenet_v2_opset13_sim.onnx",
-      "size_mb": 13.99,
-      "nodes": 100,
+      "path": "mobilenet_v3_small_opset13.onnx",
+      "size_mb": 10.19,
+      "nodes": 141,
       "initializers": 108,
       "inputs": [
         "input"
@@ -51,11 +24,41 @@
       "has_dynamic_batch": false,
       "top_ops": {
         "Conv": 52,
-        "Clip": 35,
-        "Add": 10,
-        "GlobalAveragePool": 1,
-        "Flatten": 1,
-        "Gemm": 1
+        "HardSigmoid": 28,
+        "Mul": 28,
+        "Relu": 14,
+        "GlobalAveragePool": 10,
+        "Add": 6,
+        "Gemm": 2,
+        "Flatten": 1
+      },
+      "ir_version": 7,
+      "opset": {
+        "ai.onnx": 13
+      },
+      "metadata": {}
+    },
+    "simplified": {
+      "path": "mobilenet_v3_small_opset13_sim.onnx",
+      "size_mb": 10.2,
+      "nodes": 141,
+      "initializers": 108,
+      "inputs": [
+        "input"
+      ],
+      "outputs": [
+        "output"
+      ],
+      "has_dynamic_batch": false,
+      "top_ops": {
+        "Conv": 52,
+        "HardSigmoid": 28,
+        "Mul": 28,
+        "Relu": 14,
+        "GlobalAveragePool": 10,
+        "Add": 6,
+        "Gemm": 2,
+        "Flatten": 1
       },
       "ir_version": 7,
       "opset": {
@@ -67,7 +70,7 @@
   },
   "simplify_ok": true,
   "verify": {
-    "max_abs_diff": 8.106231689453125e-06,
-    "cosine": 1.0
+    "max_abs_diff": 6.67572021484375e-06,
+    "cosine": 0.9999999403953552
   }
 }
