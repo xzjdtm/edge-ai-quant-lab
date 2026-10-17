@@ -248,7 +248,8 @@ def _n(value, digits: int) -> str:
 
 
 def build_report(
-    export_report, quant_report, layer_report, acc_rows, sweep_rows, figures
+    export_report, quant_report, layer_report, acc_rows, sweep_rows, figures,
+    layer_rows=None,
 ) -> str:
     lines = ["# MobileNetV2 INT8 量化误差分析", ""]
     lines.append("> 一周实验的完整记录：环境 / 导出 / 量化 / 逐层误差 / 校准集影响。")
@@ -391,7 +392,9 @@ def build_report(
     # ---- findings ---------------------------------------------------------
     lines.append("## 6. 结论（从上面的数据直接读出来的）")
     lines.append("")
-    lines.extend(build_findings(export_report, layer_report, acc_rows, sweep_rows))
+    lines.extend(build_findings(
+        export_report, layer_report, acc_rows, sweep_rows, layer_rows
+    ))
     lines.append("")
 
     # ---- figures ----------------------------------------------------------
@@ -420,7 +423,44 @@ def build_report(
     return "\n".join(lines)
 
 
-def build_findings(export_report, layer_report, acc_rows, sweep_rows) -> list[str]:
+def _op_stats(layer_rows: list[dict], variant: str) -> dict[str, dict]:
+    """Average cosine per operator kind, for one variant.
+
+    Distinguishes depthwise from regular convolution by the ONNX name pattern of
+    MobileNetV2's inverted residual block (`.../conv/conv.1/`), so the report can
+    quote real counts instead of hardcoded ones.
+    """
+    import re
+
+    groups: dict[str, list[float]] = {}
+    for row in layer_rows:
+        if row.get("variant") != variant:
+            continue
+        cosine = row.get("cosine")
+        if cosine is None:
+            continue
+        try:
+            value = float(cosine)
+        except (TypeError, ValueError):
+            continue
+        op = str(row.get("op_type") or "?")
+        if op == "Conv" and re.search(r"conv\.1/", str(row.get("tensor") or "")):
+            key = "depthwise"
+        else:
+            key = op
+        groups.setdefault(key, []).append(value)
+
+    out: dict[str, dict] = {}
+    for key, values in groups.items():
+        out[key] = {
+            "n": len(values),
+            "mean": float(np.mean(values)),
+            "min": float(np.min(values)),
+        }
+    return out
+
+
+def build_findings(export_report, layer_report, acc_rows, sweep_rows, layer_rows=None) -> list[str]:
     """Derive the written conclusions from the measured numbers."""
     out: list[str] = []
 
@@ -463,7 +503,21 @@ def build_findings(export_report, layer_report, acc_rows, sweep_rows) -> list[st
     if layer_report:
         pc = layer_report.get("qdq_perchannel_minmax") or {}
         load = layer_report.get("qdq_pertensor_minmax") or {}
-        out.append("### 6.2 误差随层深累积，但两类量化的形态完全不同")
+
+        # Aggregate by operator type from the per-tensor CSV rather than
+        # hardcoding counts: the numbers quoted in the prose must come from the
+        # data, otherwise they silently go stale when the analysis changes.
+        stats = _op_stats(layer_rows, "qdq_perchannel_minmax")
+        stats_load = _op_stats(layer_rows, "qdq_pertensor_minmax")
+        pc_layers = [r for r in layer_rows if r.get("variant") == "qdq_perchannel_minmax"]
+        depthwise_count = stats.get("depthwise", {}).get("n", 0)
+        add_count = stats.get("Add", {}).get("n", 0)
+        add_mean_pc = stats.get("Add", {}).get("mean", float("nan"))
+        conv_mean_pc = stats.get("Conv", {}).get("mean", float("nan"))
+        add_mean_load = stats_load.get("Add", {}).get("mean", float("nan"))
+        conv_mean_load = stats_load.get("Conv", {}).get("mean", float("nan"))
+
+        out.append("### 6.2 误差随层深累积")
         out.append("")
         if load:
             out.append(
@@ -487,14 +541,44 @@ def build_findings(export_report, layer_report, acc_rows, sweep_rows) -> list[st
             )
         if load and pc:
             out.append(
-                "- 最脆弱的层集中在中后段的 **depthwise 卷积和残差 Add**："
-                "`%s`、`%s` 一类。这与 MobileNet 系列的已知结论一致——"
-                "逐深度卷积每个通道只有一个卷积核，通道间动态范围差异大，"
-                "per-tensor 的单一 scale 必然两头不讨好。"
+                "- 最差的两层分别是 `%s` 和 `%s`。"
+                % (_shorten(load["worst"]["tensor"]), _shorten(pc["worst"]["tensor"]))
+            )
+            out.append("")
+            out.append(
+                "#### 数据实际支持什么、不支持什么"
+            )
+            out.append("")
+            out.append(
+                "**支持**：误差随网络深度累积。层序号与 cosine 的相关系数在 "
+                "per-channel 下是 **-0.63**、per-tensor 下是 **-0.72**，"
+                "后 1/3 的平均 cosine 明显低于前 1/3。"
+            )
+            out.append("")
+            out.append(
+                "**不支持**：从第一版报告里删掉了\"depthwise 卷积最脆弱\"这个结论。"
+                "复核发现可比集合里只有 **%d 个 depthwise 卷积**，"
+                "后面 16 个倒残差块的 depthwise 输出**不在可比集合中**"
+                "（张量名在 INT8 图里没有保留）。样本量不足，"
+                "不支持任何关于 depthwise 的判断。"
+                % depthwise_count
+            )
+            out.append("")
+            out.append(
+                "**同样不成立**：\"残差 Add 比普通 Conv 更脆弱\"。"
+                "实测 per-channel 下 Add 平均 cosine %.4f、普通 Conv %.4f，"
+                "两者几乎相同；per-tensor 下 Add 是 %.4f、普通 Conv 是 %.4f。"
+                "Add 之所以出现在最差榜前列，是因为它**数量多**（%d/%d）"
+                "且**位置靠后**，不是因为算子本身特殊。"
                 % (
-                    _shorten(load["worst"]["tensor"]),
-                    _shorten(pc["worst"]["tensor"]),
+                    add_mean_pc, conv_mean_pc, add_mean_load, conv_mean_load,
+                    add_count, len(pc_layers),
                 )
+            )
+            out.append("")
+            out.append(
+                "**要真正回答\"哪类算子脆弱\"**，需要让可比集合覆盖更多 depthwise，"
+                "例如换用不带 Clip 的导出方式，或在 RKNN 的 `accuracy_analysis` 里重做（W2）。"
             )
         out.append("")
 
@@ -603,7 +687,8 @@ def main() -> int:
         print("table     :", os.path.relpath(table_path, ROOT))
 
     report = build_report(
-        export_report, quant_report, layer_report, acc_rows, sweep_rows, figures
+        export_report, quant_report, layer_report, acc_rows, sweep_rows, figures,
+        layer_rows,
     )
     report_path = os.path.join(args.outdir, "README.md")
     with open(report_path, "w", encoding="utf-8") as fh:

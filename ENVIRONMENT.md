@@ -217,8 +217,12 @@ tempfile.TemporaryDirectory = _ResilientTemporaryDirectory   # 清理失败也�
 | 只取 `Conv` 输出名 | 17（+图输出 = 18） | **10 个 `Add`（残差）+ 1 个 `GlobalAveragePool` + 1 个 `Gemm`（分类头）** |
 | 全算子候选 ∩ 张量名交集 | **29** | 无 |
 
-而残差 `Add` 恰恰是量化最脆弱的部位之一——在 per-channel 的最差层列表里，
-`/features/features.13/Add_output_0` 就排在前列。**只取 Conv 就永远看不到它。**
+而 `Add` 占了可比层的三分之一（10/29）——在 per-channel 的最差层列表里，
+`/features/features.13/Add_output_0` 就排在前列。**只取 Conv 就永远看不到它们。**
+
+> 注意：后来核对全量数据发现 **Add 和普通 Conv 的平均 cosine 几乎相同**
+> （0.9880 vs 0.9879）。所以 Add 出现在最差榜前列是因为**数量多且位置靠后**，
+> 不是因为算子本身更脆弱。准确的说法是"漏掉它们就丢了三分之一的观测层"。
 
 **一个被实验推翻的错误假设，值得完整记录**：
 

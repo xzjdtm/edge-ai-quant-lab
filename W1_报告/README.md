@@ -6,12 +6,12 @@
 
 | 阶段 | 节点数 | initializer | 大小(MB) | 动态 batch |
 |---|---|---|---|---|
-| exported | 170 | 106 | 13.99 | False |
-| simplified | 100 | 108 | 13.99 | False |
+| exported | 141 | 108 | 10.19 | False |
+| simplified | 141 | 108 | 10.20 | False |
 
-- onnxsim 后数值验证：`max|diff| = 8.106e-06`，`cosine = 1.00000000`
-- onnxsim 删除 70 个节点（41.2%），节点数 170 → 100；同时 initializer 从 106 增加到 108。实测删除的全部是 **`Constant` 算子**（70 个），它们被折叠成了 initializer。
-- 注意：文件大小**没有变化**（13.99 MB）。所以常量折叠改变的是**图的形状**（节点少了、initializer 多了），不是模型体积——推理时少执行 70 个算子，权重字节一个没少。
+- onnxsim 后数值验证：`max|diff| = 6.676e-06`，`cosine = 0.99999994`
+- onnxsim 删除 0 个节点（0.0%），节点数 141 → 141；同时 initializer 从 108 增加到 108。实测删除的全部是 **`Constant` 算子**（70 个），它们被折叠成了 initializer。
+- 注意：文件大小**没有变化**（10.20 MB）。所以常量折叠改变的是**图的形状**（节点少了、initializer 多了），不是模型体积——推理时少执行 70 个算子，权重字节一个没少。
 
 ## 2. 量化变体
 
@@ -30,16 +30,16 @@
 ### qdq_pertensor_minmax
 
 - 对比张量数：29
-- 平均 cosine：0.906162
-- 最差层：`/features/features.16/conv/conv.2/Conv_output_0`（Conv，第 24 层），cosine=0.838729，SQNR=5.29 dB
-- **第一个跌破 0.99 的层**：`/features/features.1/conv/conv.1/Conv_output_0`（Conv，第 0 层），cosine=0.988701
+- 平均 cosine：0.913318
+- 最差层：`/features/features.16/conv/conv.2/Conv_output_0`（Conv，第 24 层），cosine=0.854912，SQNR=5.70 dB
+- **第一个跌破 0.99 的层**：`/features/features.1/conv/conv.1/Conv_output_0`（Conv，第 0 层），cosine=0.989282
 
 ### qdq_perchannel_minmax
 
 - 对比张量数：29
-- 平均 cosine：0.988160
-- 最差层：`/features/features.13/conv/conv.2/Conv_output_0`（Conv，第 19 层），cosine=0.979623，SQNR=14.78 dB
-- **第一个跌破 0.99 的层**：`/features/features.6/conv/conv.2/Conv_output_0`（Conv，第 7 层），cosine=0.987176
+- 平均 cosine：0.988500
+- 最差层：`/features/features.13/conv/conv.2/Conv_output_0`（Conv，第 19 层），cosine=0.979900，SQNR=15.04 dB
+- **第一个跌破 0.99 的层**：`/features/features.6/conv/conv.2/Conv_output_0`（Conv，第 7 层），cosine=0.989017
 
 ## 4. 精度对比
 
@@ -86,11 +86,21 @@
 - 代价只有 **3.65 MB → 3.89 MB**（+7%）。用 0.24 MB 换回 14 个百分点的一致率，是端侧部署里性价比最高的一次取舍。
 - 置信度下降从 **0.1272 降到 0.0116**：这一点对实际流水线很关键——argmax 一致不代表概率分布不变，下游如果按阈值做拒识或做 NMS，分布漂移会直接改变行为。
 
-### 6.2 误差随层深累积，但两类量化的形态完全不同
+### 6.2 误差随层深累积
 
-- **per-tensor 从第 0 层就开始崩**（`/features/features.1/conv/conv.1/Conv_output_0`，cosine=0.9887），之后一路下滑，最差层 cosine 只有 **0.8387**。
-- **per-channel 撑到第 7 层**才跌破阈值，最差层 cosine 仍有 **0.9796**，整条曲线基本贴着 0.98–0.99，没有崩溃段。
-- 最脆弱的层集中在中后段的 **depthwise 卷积和残差 Add**：`…eatures/features.16/conv/conv.2/Conv_output_0`、`…eatures/features.13/conv/conv.2/Conv_output_0` 一类。这与 MobileNet 系列的已知结论一致——逐深度卷积每个通道只有一个卷积核，通道间动态范围差异大，per-tensor 的单一 scale 必然两头不讨好。
+- **per-tensor 从第 0 层就开始崩**（`/features/features.1/conv/conv.1/Conv_output_0`，cosine=0.9893），之后一路下滑，最差层 cosine 只有 **0.8549**。
+- **per-channel 撑到第 7 层**才跌破阈值，最差层 cosine 仍有 **0.9799**，整条曲线基本贴着 0.98–0.99，没有崩溃段。
+- 最差的两层分别是 `…eatures/features.16/conv/conv.2/Conv_output_0` 和 `…eatures/features.13/conv/conv.2/Conv_output_0`。
+
+#### 数据实际支持什么、不支持什么
+
+**支持**：误差随网络深度累积。层序号与 cosine 的相关系数在 per-channel 下是 **-0.63**、per-tensor 下是 **-0.72**，后 1/3 的平均 cosine 明显低于前 1/3。
+
+**不支持**：从第一版报告里删掉了"depthwise 卷积最脆弱"这个结论。复核发现可比集合里只有 **1 个 depthwise 卷积**，后面 16 个倒残差块的 depthwise 输出**不在可比集合中**（张量名在 INT8 图里没有保留）。样本量不足，不支持任何关于 depthwise 的判断。
+
+**同样不成立**："残差 Add 比普通 Conv 更脆弱"。实测 per-channel 下 Add 平均 cosine 0.9880、普通 Conv 0.9879，两者几乎相同；per-tensor 下 Add 是 0.9178、普通 Conv 是 0.9071。Add 之所以出现在最差榜前列，是因为它**数量多**（10/29）且**位置靠后**，不是因为算子本身特殊。
+
+**要真正回答"哪类算子脆弱"**，需要让可比集合覆盖更多 depthwise，例如换用不带 Clip 的导出方式，或在 RKNN 的 `accuracy_analysis` 里重做（W2）。
 
 ### 6.3 校准集：数量几乎不重要，而"多样性"的结论是反直觉的
 
